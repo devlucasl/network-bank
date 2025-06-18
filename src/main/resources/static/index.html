@@ -132,8 +132,9 @@
       const res = await fetch(`http://localhost:8080/contas/saldo?cpf=${cpf}`);
       if (!res.ok) throw await res.json();
 
-      const saldo = await res.json();
-      document.getElementById("saldoMsg").textContent = `💰 Saldo: R$ ${saldo}`;
+      const resposta = await res.json();
+      document.getElementById("saldoMsg").textContent =
+              `👤 Nome: ${resposta.nome} | 💰 Saldo: R$ ${resposta.saldo}`;
     } catch (err) {
       document.getElementById("saldoMsg").textContent =
               `❌ Erro ao consultar saldo: Conta não existente!`;

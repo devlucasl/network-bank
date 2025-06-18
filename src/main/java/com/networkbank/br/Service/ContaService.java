@@ -5,6 +5,7 @@ import com.networkbank.br.Entity.Transacao;
 import com.networkbank.br.Enums.TipoTransacao;
 import com.networkbank.br.Repository.ContaRepository;
 import com.networkbank.br.Repository.TransacaoRepository;
+import com.networkbank.br.SaldoRespostaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,15 +38,18 @@ public class ContaService {
         contaRepo.save(conta);
     }
 
-    public BigDecimal consultarSaldoPorCpf(String cpf) {
-        return contaRepo.findByClienteCpf(cpf)
-                .map(Conta::getSaldo)
-                .orElseThrow(() -> new RuntimeException("Conta não encontrada para CPF: " + cpf));
-    }
-
     public String buscarNumeroContaPorCpf(String cpf) {
         return contaRepo.findByClienteCpf(cpf)
                 .map(Conta::getNumeroConta)
                 .orElse(null);
+    }
+
+    public SaldoRespostaDTO consultarSaldoPorCpf(String cpf) {
+        Conta conta = contaRepo.findByClienteCpf(cpf)
+                .orElseThrow(() -> new RuntimeException("Conta não encontrada para CPF: " + cpf));
+        String nome = conta.getCliente().getUsuario().getNome();
+        BigDecimal saldo = conta.getSaldo();
+
+        return new SaldoRespostaDTO(nome, saldo);
     }
 }

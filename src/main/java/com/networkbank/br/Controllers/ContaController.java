@@ -1,5 +1,6 @@
 package com.networkbank.br.Controllers;
 
+import com.networkbank.br.SaldoRespostaDTO;
 import com.networkbank.br.Service.ContaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,12 +28,12 @@ public class ContaController {
     }
 
     @GetMapping("/saldo")
-    public ResponseEntity<?> saldoPorCpf(@RequestParam String cpf) {
+    public ResponseEntity<SaldoRespostaDTO> saldoPorCpf(@RequestParam String cpf) {
         try {
-            BigDecimal saldo = contaService.consultarSaldoPorCpf(cpf);
-            return ResponseEntity.ok(saldo);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao consultar saldo: " + e.getMessage());
+            SaldoRespostaDTO resposta = contaService.consultarSaldoPorCpf(cpf); // ← Está correto!
+            return ResponseEntity.ok(resposta);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }
