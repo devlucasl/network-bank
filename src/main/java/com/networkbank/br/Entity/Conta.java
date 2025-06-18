@@ -16,18 +16,23 @@ import java.time.LocalDateTime;
 @Setter
 @Table(name = "conta")
 public class Conta {
-    @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idConta;
+
     private String numeroConta;
 
     @ManyToOne
-    @JoinColumn(name = "id_cliente")
+    @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
 
     private BigDecimal saldo;
+
     @Enumerated(EnumType.STRING)
     private TipoConta tipoConta;
+
     private LocalDateTime dataAbertura;
+
     @Enumerated(EnumType.STRING)
     private StatusConta status;
 }

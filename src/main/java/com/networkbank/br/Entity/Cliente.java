@@ -13,12 +13,13 @@ import java.math.BigDecimal;
 @Setter
 @Table(name = "cliente")
 public class Cliente {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCliente;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_usuario")
-    private Usuario usuario;
+    protected Usuario usuario;
 
     private BigDecimal scoreCredito;
 }

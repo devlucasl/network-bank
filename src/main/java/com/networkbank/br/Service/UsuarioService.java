@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UsuarioService {
-    @Autowired private UsuarioRepository usuarioRepo;
+    @Autowired protected UsuarioRepository usuarioRepo;
 
     public Usuario salvar(Usuario usuario) {
         return usuarioRepo.save(usuario);

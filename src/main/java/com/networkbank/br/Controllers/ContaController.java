@@ -2,6 +2,7 @@ package com.networkbank.br.Controllers;
 
 import com.networkbank.br.Service.ContaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,19 +11,29 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/contas")
 public class ContaController {
+
     @Autowired
     private ContaService contaService;
 
     @PostMapping("/depositar")
-    public ResponseEntity<String> depositar(@RequestParam String numeroConta,
+    public ResponseEntity<String> depositar(@RequestParam String cpf,
                                             @RequestParam BigDecimal valor) {
-        contaService.depositar(numeroConta, valor);
-        return ResponseEntity.ok("Depósito realizado com sucesso");
+        try {
+            contaService.depositarPorCpf(cpf, valor);
+            return ResponseEntity.ok("Depósito realizado com sucesso");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao realizar depósito: " + e.getMessage());
+        }
     }
 
-    @GetMapping("/{numeroConta}/saldo")
-    public ResponseEntity<BigDecimal> saldo(@PathVariable String numeroConta) {
-        return ResponseEntity.ok(contaService.consultarSaldo(numeroConta));
+    @GetMapping("/saldo")
+    public ResponseEntity<?> saldoPorCpf(@RequestParam String cpf) {
+        try {
+            BigDecimal saldo = contaService.consultarSaldoPorCpf(cpf);
+            return ResponseEntity.ok(saldo);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao consultar saldo: " + e.getMessage());
+        }
     }
 }
 

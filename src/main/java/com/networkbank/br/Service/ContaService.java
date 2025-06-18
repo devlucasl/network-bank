@@ -7,17 +7,23 @@ import com.networkbank.br.Repository.ContaRepository;
 import com.networkbank.br.Repository.TransacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
 public class ContaService {
-    @Autowired private ContaRepository contaRepo;
-    @Autowired private TransacaoRepository transacaoRepo;
 
-    public void depositar(String numeroConta, BigDecimal valor) {
-        Conta conta = contaRepo.findByClienteUsuarioCpf(numeroConta)
-                .orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+    @Autowired
+    protected ContaRepository contaRepo;
+
+    @Autowired
+    protected TransacaoRepository transacaoRepo;
+
+    public void depositarPorCpf(String cpf, BigDecimal valor) {
+        Conta conta = contaRepo.findByClienteCpf(cpf)
+                .orElseThrow(() -> new RuntimeException("Conta não encontrada para CPF: " + cpf));
+
         conta.setSaldo(conta.getSaldo().add(valor));
 
         Transacao t = new Transacao();
@@ -25,15 +31,21 @@ public class ContaService {
         t.setTipoTransacao(TipoTransacao.DEPOSITO);
         t.setValor(valor);
         t.setDataHora(LocalDateTime.now());
-        t.setDescricao("Depósito realizado");
+        t.setDescricao("Depósito por CPF");
 
         transacaoRepo.save(t);
         contaRepo.save(conta);
     }
 
-    public BigDecimal consultarSaldo(String numeroConta) {
-        return contaRepo.findByClienteUsuarioCpf(numeroConta)
+    public BigDecimal consultarSaldoPorCpf(String cpf) {
+        return contaRepo.findByClienteCpf(cpf)
                 .map(Conta::getSaldo)
-                .orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+                .orElseThrow(() -> new RuntimeException("Conta não encontrada para CPF: " + cpf));
+    }
+
+    public String buscarNumeroContaPorCpf(String cpf) {
+        return contaRepo.findByClienteCpf(cpf)
+                .map(Conta::getNumeroConta)
+                .orElse(null);
     }
 }

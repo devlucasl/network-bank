@@ -15,7 +15,9 @@ import java.time.LocalDateTime;
 @Setter
 @Table(name = "transacao")
 public class Transacao {
-    @Id @GeneratedValue
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idTransacao;
 
     @ManyToOne
@@ -24,7 +26,10 @@ public class Transacao {
 
     @Enumerated(EnumType.STRING)
     private TipoTransacao tipoTransacao;
+
     private BigDecimal valor;
+
     private LocalDateTime dataHora;
+
     private String descricao;
 }

@@ -16,11 +16,10 @@ import java.util.Date;
 @Table(name = "usuario")
 public class Usuario {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idUsuario;
+    protected Integer idUsuario;
 
     @Column(nullable = false)
     private String nome;
-
     @Column(unique = true, nullable = false, length = 11)
     private String cpf;
 
