@@ -5,29 +5,64 @@
   <title>Network Bank</title>
   <style>
     body {
-      background-color: #121212;
-      color: white;
-      font-family: Arial, sans-serif;
-      padding: 20px;
+      background-color: #0f0f0f;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 40px;
+      max-width: 600px;
+      margin: auto;
     }
-    input, select {
+
+    h1, h2 {
+      color: #00d4ff;
+    }
+
+    input {
       display: block;
-      margin-bottom: 10px;
-      padding: 8px;
-      background-color: #2c2c2c;
-      color: white;
-      border: none;
-      width: 300px;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 12px;
+      background-color: #1f1f1f;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      transition: border 0.2s;
     }
+
+    input:focus {
+      border-color: #00d4ff;
+      outline: none;
+    }
+
     button {
-      padding: 10px;
-      background-color: #555;
-      color: white;
+      width: 100%;
+      padding: 12px;
+      background-color: #00d4ff;
       border: none;
+      border-radius: 8px;
+      color: #000;
+      font-weight: bold;
+      font-size: 15px;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
+
+    button:hover {
+      background-color: #00bde0;
+    }
+
     .section {
-      margin-top: 40px;
+      margin-top: 50px;
+      background-color: #1a1a1a;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+    }
+
+    p {
+      margin-top: 10px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -40,10 +75,6 @@
   <input id="cpf" placeholder="CPF" />
   <input id="dataNascimento" placeholder="Data de nascimento" type="date" />
   <input id="telefone" placeholder="Telefone" />
-  <select id="tipoUsuario">
-    <option value="CLIENTE">Cliente</option>
-    <option value="FUNCIONARIO">Funcionário</option>
-  </select>
   <input id="senhaHash" placeholder="Senha" type="password" />
   <button onclick="cadastrarUsuario()">Cadastrar</button>
   <p id="cadastroMsg"></p>
@@ -71,7 +102,7 @@
       cpf: document.getElementById("cpf").value,
       dataNascimento: document.getElementById("dataNascimento").value,
       telefone: document.getElementById("telefone").value,
-      tipoUsuario: document.getElementById("tipoUsuario").value,
+      tipoUsuario: "CLIENTE", // fixado
       senhaHash: document.getElementById("senhaHash").value
     };
 
@@ -87,9 +118,11 @@
       if (!res.ok) throw await res.json();
 
       const data = await res.json();
-      document.getElementById("cadastroMsg").textContent = `Usuário cadastrado com sucesso! ID: ${data.usuario.idUsuario}`;
+      document.getElementById("cadastroMsg").textContent =
+              `✅ Usuário cadastrado com sucesso! ID: ${data.usuario.idUsuario}`;
     } catch (err) {
-      document.getElementById("cadastroMsg").textContent = `Erro ao cadastrar usuário: Usuario já existente!`;
+      document.getElementById("cadastroMsg").textContent =
+              `❌ Erro ao cadastrar usuário: Usuário já existente!`;
     }
   }
 
@@ -100,9 +133,10 @@
       if (!res.ok) throw await res.json();
 
       const saldo = await res.json();
-      document.getElementById("saldoMsg").textContent = `Saldo: R$ ${saldo}`;
+      document.getElementById("saldoMsg").textContent = `💰 Saldo: R$ ${saldo}`;
     } catch (err) {
-      document.getElementById("saldoMsg").textContent = `Erro ao consultar saldo: Conta não existente!`;
+      document.getElementById("saldoMsg").textContent =
+              `❌ Erro ao consultar saldo: Conta não existente!`;
     }
   }
 
@@ -115,14 +149,15 @@
       });
 
       if (!response.ok) {
-        const errorText = await response.text(); // ← evita tentar ler JSON
+        const errorText = await response.text();
         throw new Error(errorText);
       }
 
       const mensagem = await response.text();
-      alert(mensagem);
+      document.getElementById("depositoMsg").textContent = `✅ ${mensagem}`;
     } catch (error) {
-      alert("Erro ao realizar depósito: " + error.message);
+      document.getElementById("depositoMsg").textContent =
+              `❌ Erro ao realizar depósito: ${error.message}`;
     }
   }
 </script>
